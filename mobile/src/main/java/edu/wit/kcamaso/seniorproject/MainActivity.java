@@ -1,11 +1,11 @@
 package edu.wit.kcamaso.seniorproject;
 
 import android.content.Intent;
+
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
 import android.util.Log;
-import android.view.View;
+
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,16 +24,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
 import java.util.Arrays;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int RC_SIGN_IN = 123;
-
     private FirebaseAuth mAuth;
 
 
@@ -56,16 +56,19 @@ public class MainActivity extends AppCompatActivity
 
 
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null)
+        {
+            signOn();
+        }
 
         signOn();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        Log.i("INFO:", "User Info:" + currentUser.getDisplayName() + "\n" + currentUser.getPhotoUrl().toString());
 
     }
 
+// The sign in function
     public void signOn()
     {
 
@@ -85,16 +88,9 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null)
-        {
-            signOn();
-        }
-    }
 
+
+    // The result that comes from the sign in activity.  It sets the user's profile file name and email that they signed in with.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -108,11 +104,11 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "Signed in!", Toast.LENGTH_SHORT).show();
 
                 TextView headerText = (TextView) findViewById(R.id.headerTitle);
-              //  ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                ImageView imageView = (ImageView) findViewById(R.id.imageView);
                 TextView subText = (TextView) findViewById(R.id.textView);
 
                 headerText.setText( user.getDisplayName());
-              //  imageView.setImageURI(user.getPhotoUrl());
+              //  imageView.setImageBitmap( makeBitmap( user.getPhotoUrl().toString()) );
                 subText.setText( user.getEmail());
 
                 // ...
@@ -123,6 +119,8 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -162,17 +160,15 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_alarm) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_meds) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_sign_out) {
 
         }
 

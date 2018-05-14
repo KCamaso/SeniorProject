@@ -1,9 +1,14 @@
 package edu.wit.kcamaso.seniorproject;
 
+import android.support.v4.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import android.support.design.widget.NavigationView;
@@ -20,6 +25,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,7 +40,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int RC_SIGN_IN = 123;
+    private static final int RC_SIGN_IN = 11037;
     private FirebaseAuth mAuth;
 
 
@@ -57,25 +64,20 @@ public class MainActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null)
-        {
+        if (currentUser == null) {
             signOn();
         }
-
-        signOn();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     }
 
-// The sign in function
-    public void signOn()
-    {
+    // The sign in function
+    public void signOn() {
 
 // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build());
 
 // Create and launch sign-in intent
@@ -102,16 +104,8 @@ public class MainActivity extends AppCompatActivity
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 Toast.makeText(getApplicationContext(), "Signed in!", Toast.LENGTH_SHORT).show();
+                refreshUI();
 
-                TextView headerText = (TextView) findViewById(R.id.headerTitle);
-                ImageView imageView = (ImageView) findViewById(R.id.imageView);
-                TextView subText = (TextView) findViewById(R.id.textView);
-
-                headerText.setText( user.getDisplayName());
-              //  imageView.setImageBitmap( makeBitmap( user.getPhotoUrl().toString()) );
-                subText.setText( user.getEmail());
-
-                // ...
             } else {
                 // Sign in failed, check response for error code
                 Toast.makeText(getApplicationContext(), "Sign in error!", Toast.LENGTH_SHORT).show();
@@ -119,7 +113,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
 
 
     @Override
@@ -160,20 +153,84 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+       Fragment newFragment;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
         if (id == R.id.nav_home) {
-            // Handle the camera action
+            newFragment = new HomeFragment();
+            transaction.replace(R.id.fragment, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+
         } else if (id == R.id.nav_alarm) {
+            newFragment = new AlarmFragment();
+            transaction.replace(R.id.fragment, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+
 
         } else if (id == R.id.nav_meds) {
+            newFragment = new MedFragment();
+            transaction.replace(R.id.fragment, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+
 
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_sign_out) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            // Add the buttons
+            builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK button
+                    AuthUI.getInstance()
+                            .signOut(getApplicationContext())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(getApplicationContext(), "Sign out selected!", Toast.LENGTH_SHORT).show();
+                                    refreshUI();
+                                }
+                            });
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User cancelled the dialog
+                }
+            });
+            // Set other dialog properties
+            builder.setMessage(R.string.signout);
+
+            // Create the AlertDialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void refreshUI() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        TextView headerText = (TextView) findViewById(R.id.headerTitle);
+        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        TextView subText = (TextView) findViewById(R.id.textView);
+
+
+        if (user != null) {
+            headerText.setText(user.getDisplayName());
+            //  imageView.setImageBitmap( makeBitmap( user.getPhotoUrl().toString()) );
+            subText.setText(user.getEmail());
+        } else {
+
+            signOn();
+        }
+
     }
 }

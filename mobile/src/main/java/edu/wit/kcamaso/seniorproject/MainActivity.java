@@ -19,8 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -29,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final int RC_SIGN_IN = 11037;
     private FirebaseAuth mAuth;
+
 
 
     @Override
@@ -70,6 +71,19 @@ public class MainActivity extends AppCompatActivity
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    }
+
+
+    @Override
+    public void  onResume()
+    {
+        super.onResume();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user == null)
+        {
+            Toast.makeText(getApplicationContext(), getString(R.string.please_sign_in), Toast.LENGTH_SHORT).show();
+            signOn();
+        }
     }
 
     // The sign in function
@@ -103,8 +117,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Toast.makeText(getApplicationContext(), "Signed in!", Toast.LENGTH_SHORT).show();
-                refreshUI();
+                Toast.makeText(getApplicationContext(), "Signed in as:" + user.getEmail(), Toast.LENGTH_SHORT).show();
 
             } else {
                 // Sign in failed, check response for error code
@@ -154,24 +167,24 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
        Fragment newFragment;
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         if (id == R.id.nav_home) {
-            newFragment = new HomeFragment();
-            transaction.replace(R.id.fragment, newFragment);
+            newFragment = new HomeFrag();
+            transaction.replace(R.id.placeholder_fragment, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
 
         } else if (id == R.id.nav_alarm) {
-            newFragment = new AlarmFragment();
-            transaction.replace(R.id.fragment, newFragment);
+            newFragment = new AlarmFrag();
+            transaction.replace(R.id.placeholder_fragment, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
 
 
         } else if (id == R.id.nav_meds) {
-            newFragment = new MedFragment();
-            transaction.replace(R.id.fragment, newFragment);
+            newFragment = new MedFrag();
+            transaction.replace(R.id.placeholder_fragment, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
 
@@ -190,8 +203,9 @@ public class MainActivity extends AppCompatActivity
                             .signOut(getApplicationContext())
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(getApplicationContext(), "Sign out selected!", Toast.LENGTH_SHORT).show();
-                                    refreshUI();
+                                    Toast.makeText(getApplicationContext(), "Sign out successful!", Toast.LENGTH_SHORT).show();
+                                    signOn();
+
                                 }
                             });
                 }
@@ -216,21 +230,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void refreshUI() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        TextView headerText = (TextView) findViewById(R.id.headerTitle);
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        TextView subText = (TextView) findViewById(R.id.textView);
 
-
-        if (user != null) {
-            headerText.setText(user.getDisplayName());
-            //  imageView.setImageBitmap( makeBitmap( user.getPhotoUrl().toString()) );
-            subText.setText(user.getEmail());
-        } else {
-
-            signOn();
-        }
-
-    }
 }
+

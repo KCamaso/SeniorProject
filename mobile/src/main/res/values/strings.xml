@@ -11,4 +11,10 @@
     <string name="cancel">Cancel</string>
     <string name="no_user">No User Selected</string>
     <string name="pls_sign">Please Sign In</string>
+    <string name="signed_in_as">Signed in as: </string>
+    <string name="please_sign_in">Please sign in to continue!</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,6 +71,9 @@ public class HomeFrag extends Fragment {
         {
             container.clearDisappearingChildren();
         }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("alarms");
         return inflater.inflate(R.layout.home_main, container, false);
     }
 

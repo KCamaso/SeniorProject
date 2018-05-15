@@ -3,13 +3,23 @@ package edu.wit.kcamaso.seniorproject;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
@@ -93,6 +103,24 @@ public class AlarmFrag extends Fragment {
                 }
             });
         }
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("Hello", "Alarms!");
+        data.put("This is", "a placeholder!");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("alarms")
+                .add(data).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Log.d("DATABASE", "DocumentSnapshot written with ID: " + documentReference.getId());
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DATABASE", "Error adding document", e);
+                    }
+                });
         return view;
     }
 

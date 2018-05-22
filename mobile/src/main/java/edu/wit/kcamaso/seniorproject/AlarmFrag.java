@@ -104,6 +104,8 @@ public class AlarmFrag extends Fragment {
             });
         }
 
+        // FIREBASE CODE
+        /*
         Map<String, Object> data = new HashMap<>();
         data.put("Hello", "Alarms!");
         data.put("This is", "a placeholder!");
@@ -121,7 +123,10 @@ public class AlarmFrag extends Fragment {
                         Log.w("DATABASE", "Error adding document", e);
                     }
                 });
+                 */
+
         return view;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

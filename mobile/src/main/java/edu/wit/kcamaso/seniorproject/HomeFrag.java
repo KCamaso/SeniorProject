@@ -72,8 +72,7 @@ public class HomeFrag extends Fragment {
             container.clearDisappearingChildren();
         }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("alarms");
+
         return inflater.inflate(R.layout.home_main, container, false);
     }
 

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int RC_SIGN_IN = 11037;
-    private FirebaseAuth mAuth;
+   // private FirebaseAuth mAuth;
 
 
 
@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        //FIREBASE CODE
+        /*
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        */
 
     }
 
@@ -78,16 +81,23 @@ public class MainActivity extends AppCompatActivity
     public void  onResume()
     {
         super.onResume();
+
+        //FIREBASE CODE
+        /*
         FirebaseUser user = mAuth.getCurrentUser();
         if(user == null)
         {
             Toast.makeText(getApplicationContext(), getString(R.string.please_sign_in), Toast.LENGTH_SHORT).show();
             signOn();
         }
+        */
     }
 
     // The sign in function
     public void signOn() {
+
+        //FIREBASE CODE
+        /*
 
 // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -102,7 +112,7 @@ public class MainActivity extends AppCompatActivity
                         .build(),
                 RC_SIGN_IN);
 
-
+        */
     }
 
 
@@ -111,6 +121,8 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        //FIREBASE CODE
+        /*
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
@@ -125,6 +137,8 @@ public class MainActivity extends AppCompatActivity
                 // ...
             }
         }
+
+        */
     }
 
 
@@ -193,6 +207,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_sign_out) {
 
+            //FIREBASE CODE
+            /*
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             // Add the buttons
@@ -221,6 +238,8 @@ public class MainActivity extends AppCompatActivity
             // Create the AlertDialog
             AlertDialog dialog = builder.create();
             dialog.show();
+
+            */
 
 
         }
